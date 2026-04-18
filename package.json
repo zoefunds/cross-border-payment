@@ -1,0 +1,14 @@
+{
+  "name": "cross-border-payment",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production-grade cross-border payment system (Nigeria <-> Ghana)",
+  "workspaces": ["services/functions"],
+  "scripts": {
+    "build": "cd services/functions && npm run build",
+    "serve": "cd services/functions && npm run serve",
+    "deploy": "cd services/functions && npm run deploy",
+    "logs": "firebase functions:log"
+  },
+  "engines": { "node": ">=18.0.0" }
+}
