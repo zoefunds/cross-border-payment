@@ -1,61 +1,51 @@
+/**
+ * ABI for the Escrow contract deployed on Base Sepolia
+ * Escrow:   0xaC11528c36A05C904Bead5Ed3a74d4e40Dd38bfE
+ * MockUSDC: 0xB9a0E369995c03d966470D4E86b1bdbAD9bd7dc2
+ * Chain:    Base Sepolia (84532)
+ */
+
 export const CROSS_BORDER_PAYMENT_ABI = [
   {
-    "type": "constructor",
-    "inputs": [
-      { "name": "_usdc", "type": "address" },
-      { "name": "_treasury", "type": "address" },
-      { "name": "_feeCollector", "type": "address" }
-    ],
-    "stateMutability": "nonpayable"
-  },
-  {
     "type": "function",
-    "name": "initiatePayment",
+    "name": "deposit",
     "inputs": [
-      { "name": "paymentId", "type": "bytes32" },
+      { "name": "txId",      "type": "bytes32" },
       { "name": "recipient", "type": "address" },
-      { "name": "amount", "type": "uint256" },
-      { "name": "firebaseTxId", "type": "string" }
+      { "name": "amount",    "type": "uint256" }
     ],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
-    "name": "releasePayment",
-    "inputs": [
-      { "name": "paymentId", "type": "bytes32" }
-    ],
+    "name": "completeTransfer",
+    "inputs": [{ "name": "txId", "type": "bytes32" }],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
-    "name": "refundPayment",
-    "inputs": [
-      { "name": "paymentId", "type": "bytes32" },
-      { "name": "reason", "type": "string" }
-    ],
+    "name": "cancelTransfer",
+    "inputs": [{ "name": "txId", "type": "bytes32" }],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
-    "name": "getPayment",
-    "inputs": [{ "name": "paymentId", "type": "bytes32" }],
+    "name": "getTransfer",
+    "inputs": [{ "name": "txId", "type": "bytes32" }],
     "outputs": [
       {
         "type": "tuple",
         "components": [
-          { "name": "paymentId", "type": "bytes32" },
-          { "name": "sender", "type": "address" },
+          { "name": "sender",    "type": "address" },
           { "name": "recipient", "type": "address" },
-          { "name": "amount", "type": "uint256" },
-          { "name": "fee", "type": "uint256" },
-          { "name": "createdAt", "type": "uint256" },
-          { "name": "expiresAt", "type": "uint256" },
-          { "name": "status", "type": "uint8" },
-          { "name": "firebaseTxId", "type": "string" }
+          { "name": "amount",    "type": "uint256" },
+          { "name": "fee",       "type": "uint256" },
+          { "name": "netAmount", "type": "uint256" },
+          { "name": "status",    "type": "uint8"   },
+          { "name": "timestamp", "type": "uint64"  }
         ]
       }
     ],
@@ -63,57 +53,77 @@ export const CROSS_BORDER_PAYMENT_ABI = [
   },
   {
     "type": "function",
-    "name": "treasury",
+    "name": "isPending",
+    "inputs": [{ "name": "txId", "type": "bytes32" }],
+    "outputs": [{ "type": "bool" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "calculateFee",
+    "inputs": [{ "name": "amount", "type": "uint256" }],
+    "outputs": [{ "type": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "contractBalance",
+    "inputs": [],
+    "outputs": [{ "type": "uint256" }],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "relayer",
     "inputs": [],
     "outputs": [{ "type": "address" }],
     "stateMutability": "view"
   },
   {
     "type": "function",
-    "name": "feeBasisPoints",
+    "name": "usdcToken",
     "inputs": [],
-    "outputs": [{ "type": "uint256" }],
+    "outputs": [{ "type": "address" }],
     "stateMutability": "view"
   },
   {
     "type": "function",
-    "name": "totalLocked",
+    "name": "paused",
     "inputs": [],
-    "outputs": [{ "type": "uint256" }],
+    "outputs": [{ "type": "bool" }],
     "stateMutability": "view"
   },
   {
     "type": "event",
-    "name": "PaymentInitiated",
+    "name": "TransferInitiated",
     "inputs": [
-      { "name": "paymentId", "type": "bytes32", "indexed": true },
-      { "name": "sender", "type": "address", "indexed": true },
-      { "name": "recipient", "type": "address", "indexed": true },
-      { "name": "amount", "type": "uint256", "indexed": false },
-      { "name": "fee", "type": "uint256", "indexed": false },
-      { "name": "firebaseTxId", "type": "string", "indexed": false },
-      { "name": "expiresAt", "type": "uint256", "indexed": false }
+      { "name": "txId",      "type": "bytes32", "indexed": true  },
+      { "name": "sender",    "type": "address", "indexed": true  },
+      { "name": "recipient", "type": "address", "indexed": false },
+      { "name": "amount",    "type": "uint256", "indexed": false },
+      { "name": "fee",       "type": "uint256", "indexed": false },
+      { "name": "netAmount", "type": "uint256", "indexed": false },
+      { "name": "timestamp", "type": "uint64",  "indexed": false }
     ]
   },
   {
     "type": "event",
-    "name": "PaymentReleased",
+    "name": "TransferCompleted",
     "inputs": [
-      { "name": "paymentId", "type": "bytes32", "indexed": true },
-      { "name": "recipient", "type": "address", "indexed": true },
-      { "name": "amount", "type": "uint256", "indexed": false },
-      { "name": "fee", "type": "uint256", "indexed": false },
-      { "name": "firebaseTxId", "type": "string", "indexed": false }
+      { "name": "txId",      "type": "bytes32", "indexed": true  },
+      { "name": "recipient", "type": "address", "indexed": true  },
+      { "name": "netAmount", "type": "uint256", "indexed": false },
+      { "name": "timestamp", "type": "uint64",  "indexed": false }
     ]
   },
   {
     "type": "event",
-    "name": "PaymentRefunded",
+    "name": "TransferCancelled",
     "inputs": [
-      { "name": "paymentId", "type": "bytes32", "indexed": true },
-      { "name": "treasury", "type": "address", "indexed": true },
-      { "name": "amount", "type": "uint256", "indexed": false },
-      { "name": "reason", "type": "string", "indexed": false }
+      { "name": "txId",      "type": "bytes32", "indexed": true  },
+      { "name": "sender",    "type": "address", "indexed": true  },
+      { "name": "amount",    "type": "uint256", "indexed": false },
+      { "name": "timestamp", "type": "uint64",  "indexed": false }
     ]
   }
 ] as const;
@@ -124,10 +134,20 @@ export const USDC_ABI = [
     "name": "approve",
     "inputs": [
       { "name": "spender", "type": "address" },
-      { "name": "amount", "type": "uint256" }
+      { "name": "amount",  "type": "uint256" }
     ],
     "outputs": [{ "type": "bool" }],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "allowance",
+    "inputs": [
+      { "name": "owner",   "type": "address" },
+      { "name": "spender", "type": "address" }
+    ],
+    "outputs": [{ "type": "uint256" }],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -138,12 +158,29 @@ export const USDC_ABI = [
   },
   {
     "type": "function",
-    "name": "allowance",
+    "name": "transfer",
     "inputs": [
-      { "name": "owner", "type": "address" },
-      { "name": "spender", "type": "address" }
+      { "name": "to",     "type": "address" },
+      { "name": "amount", "type": "uint256" }
     ],
-    "outputs": [{ "type": "uint256" }],
+    "outputs": [{ "type": "bool" }],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "decimals",
+    "inputs": [],
+    "outputs": [{ "type": "uint8" }],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "mint",
+    "inputs": [
+      { "name": "to",     "type": "address" },
+      { "name": "amount", "type": "uint256" }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
   }
 ] as const;

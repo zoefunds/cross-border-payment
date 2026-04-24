@@ -174,4 +174,43 @@ export class TransactionRepository {
   }
 }
 
+  async findByTxHash(txHash: string): Promise<TransactionModel> {
+    const snap = await db
+      .collection(Collections.TRANSACTIONS)
+      .where("blockchain.txHash", "==", txHash)
+      .limit(1)
+      .get();
+    if (snap.empty) throw new NotFoundError("Transaction");
+    return snap.docs[0].data() as TransactionModel;
+  }
+
+  async findByOnChainId(onChainId: string): Promise<TransactionModel> {
+    const snap = await db
+      .collection(Collections.TRANSACTIONS)
+      .where("blockchain.paymentId", "==", onChainId)
+      .limit(1)
+      .get();
+    if (snap.empty) throw new NotFoundError("Transaction");
+    return snap.docs[0].data() as TransactionModel;
+  }
+
+  async findStuck(olderThanMinutes: number = 30): Promise<TransactionModel[]> {
+    const cutoff = new Date(Date.now() - olderThanMinutes * 60 * 1000);
+    const stuckStatuses = ["INITIATED", "NAIRA_DEBITED", "USDC_SENT", "CEDIS_CREDITED"];
+    const results: TransactionModel[] = [];
+
+    for (const status of stuckStatuses) {
+      const snap = await db
+        .collection(Collections.TRANSACTIONS)
+        .where("status", "==", status)
+        .where("createdAt", "<", cutoff)
+        .limit(50)
+        .get();
+      results.push(...snap.docs.map((d) => d.data() as TransactionModel));
+    }
+
+    return results;
+  }
+
+
 export const transactionRepository = new TransactionRepository();

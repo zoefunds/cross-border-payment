@@ -151,6 +151,7 @@ export class TransactionOrchestrator {
     );
 
     await transactionRepository.updateBlockchainRef(transactionId, {
+      paymentId: result.paymentId,
       txHash: result.txHash,
       blockNumber: result.blockNumber,
       contractAddress: env.PAYMENT_CONTRACT_ADDRESS,

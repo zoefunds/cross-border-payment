@@ -22,6 +22,7 @@ export interface FxSnapshot {
 }
 
 export interface BlockchainRef {
+  paymentId?: string;
   txHash?: string;
   blockNumber?: number;
   contractAddress?: string;
