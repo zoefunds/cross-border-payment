@@ -1,0 +1,56 @@
+{
+  "localhost": [
+    {
+      "network": "localhost",
+      "chainId": 31337,
+      "deployedAt": "2026-04-18T10:12:04.805Z",
+      "deployer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+      "contracts": {
+        "MockUSDC": {
+          "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          "txHash": "0x6f9216224ad98e2cf2cc62b821b7e098333a18721ba25321d74ea9d6826c147e",
+          "blockNumber": 1
+        },
+        "Escrow": {
+          "address": "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+          "txHash": "0xf0210d4e31213958d5dffce0fd492fd4ce2c9b5b28d511b2e919a881b4659d5a",
+          "blockNumber": 3,
+          "constructorArgs": {
+            "usdcToken": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+            "relayer": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "feeRecipient": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
+            "feeBasisPoints": 50,
+            "initialOwner": "0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266"
+          }
+        }
+      }
+    }
+  ],
+  "baseTestnet": [
+    {
+      "network": "baseTestnet",
+      "chainId": 84532,
+      "deployedAt": "2026-04-19T04:41:54.824Z",
+      "deployer": "0x3F5e4e0E67f6F83B9B4f4da340d90F5Ae7c83105",
+      "contracts": {
+        "MockUSDC": {
+          "address": "0xB9a0E369995c03d966470D4E86b1bdbAD9bd7dc2",
+          "txHash": "0xfdc90541ed1e9c2aa3434d66797de85489b4839d73ff4c995e89ac2864b66a84",
+          "blockNumber": 40402710
+        },
+        "Escrow": {
+          "address": "0xaC11528c36A05C904Bead5Ed3a74d4e40Dd38bfE",
+          "txHash": "0xe98844ec5b2ab398906a554e2f94c8874936ef45badc265827f766c8858aa9a7",
+          "blockNumber": 40402713,
+          "constructorArgs": {
+            "usdcToken": "0xB9a0E369995c03d966470D4E86b1bdbAD9bd7dc2",
+            "relayer": "0xF2ba3b7b3CC269354d4F770549733B5b9e6813Ca",
+            "feeRecipient": "0x3F5e4e0E67f6F83B9B4f4da340d90F5Ae7c83105",
+            "feeBasisPoints": 50,
+            "initialOwner": "0x3F5e4e0E67f6F83B9B4f4da340d90F5Ae7c83105"
+          }
+        }
+      }
+    }
+  ]
+}

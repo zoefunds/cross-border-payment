@@ -1,0 +1,30 @@
+{
+  "name": "cross-border-payment-blockchain",
+  "version": "1.0.0",
+  "description": "Blockchain layer for cross-border payment system",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:testnet": "hardhat run scripts/deploy.ts --network baseTestnet",
+    "node:local": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "export:abis": "ts-node scripts/exportAbis.ts",
+    "relayer:start": "ts-node relayer-service/src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2",
+    "ethers": "^6.11.1",
+    "dotenv": "^16.4.5",
+    "winston": "^3.13.0",
+    "axios": "^1.6.8"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "@nomicfoundation/hardhat-ethers": "^3.0.6",
+    "@types/node": "^20.12.7",
+    "hardhat": "^2.22.3",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}

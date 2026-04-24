@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Environment — NEVER COMMIT
+.env
+
+# Build artifacts
+dist/
+cache/
+artifacts/
+typechain-types/
+
+# Reports
+gas-report.txt
+
+# IDE
+.vscode/
+.idea/
