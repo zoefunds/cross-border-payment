@@ -1,0 +1,9 @@
+{
+  "mockUsdcAddress": "0xc57364Ed661dEb72587D4edC019B5606401A99e7",
+  "escrowAddress": "0x6793801d231Dceb2bC5c558721fC8Ccb1fE38B28",
+  "relayer": "0x336Ef237364838B96E742891d3e95C971826B87B",
+  "treasury": "0x915848269309Ad07A562F49aE04Db66B76db7fE1",
+  "network": "Base Sepolia",
+  "chainId": 84532,
+  "deployedAt": "2026-04-25T13:34:02.395Z"
+}
