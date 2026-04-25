@@ -1,7 +1,7 @@
 {
   "functions": {
     "source": "services/functions",
-    "runtime": "nodejs22",
+    "runtime": "nodejs20",
     "secrets": [
       "TREASURY_PRIVATE_KEY",
       "FB_PRIVATE_KEY",

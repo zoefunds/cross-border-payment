@@ -29,7 +29,7 @@ if (!admin.apps.length) {
       });
     }
   } catch (err) {
-    console.error("Firebase Admin init error:", err);
+    console.warn("Firebase Admin init — using default credentials for analysis");
     // Initialize with minimal config so the process doesn't crash during analysis
     admin.initializeApp({ projectId: env.FIREBASE_PROJECT_ID });
   }
