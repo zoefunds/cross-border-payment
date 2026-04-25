@@ -24,3 +24,4 @@ broadcast/
 cache/
 out/
 relayer-service/.env
+services/functions/.env.production
