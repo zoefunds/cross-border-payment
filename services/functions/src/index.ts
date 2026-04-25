@@ -9,6 +9,7 @@ import { ledgerRouter } from "./api/ledger.routes";
 import { fxRouter } from "./api/fx.routes";
 import { transactionRouter } from "./api/transaction.routes";
 import { liquidityRouter } from "./api/liquidity.routes";
+import { relayerRouter } from "./api/relayer.routes";
 import { generalLimiter, authLimiter } from "./middleware/rate-limit.middleware";
 import { errorHandler } from "./middleware/error.middleware";
 import { sendError } from "./utils/response";
@@ -32,6 +33,7 @@ app.use("/ledger", ledgerRouter);
 app.use("/fx", fxRouter);
 app.use("/transactions", transactionRouter);
 app.use("/liquidity", liquidityRouter);
+app.use("/relayer", relayerRouter);
 
 app.get("/health", (_req, res) => {
   res.status(200).json({

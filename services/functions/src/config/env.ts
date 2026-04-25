@@ -1,41 +1,33 @@
-import { z } from "zod";
-
-const envSchema = z.object({
-  NODE_ENV: z.enum(["development", "staging", "production"]).default("development"),
-  APP_ENV: z.enum(["development", "staging", "production"]).default("development"),
-  LOG_LEVEL: z.enum(["debug", "info", "warn", "error"]).default("info"),
-
-  FIREBASE_PROJECT_ID: z.string().min(1).default("demo-crossborder"),
-  FIREBASE_PRIVATE_KEY: z.string().optional(),
-  FIREBASE_CLIENT_EMAIL: z.string().optional(),
-
-  BASE_RPC_URL: z.string().default("https://sepolia.base.org"),
-  PAYMENT_CONTRACT_ADDRESS: z.string().optional(),
-  TREASURY_WALLET_ADDRESS: z.string().optional(),
-  TREASURY_PRIVATE_KEY: z.string().optional(),
-  USDC_CONTRACT_ADDRESS: z.string().default("0x036CbD53842c5426634e7929541eC2318f3dCF7e"),
-
-  FX_API_KEY: z.string().optional(),
-  FX_API_URL: z.string().optional(),
-
-  MAX_TRANSACTION_NGN: z.coerce.number().default(5_000_000),
-  MIN_TRANSACTION_NGN: z.coerce.number().default(1_000),
-  MAX_TRANSACTION_GHS: z.coerce.number().default(50_000),
-  MIN_TRANSACTION_GHS: z.coerce.number().default(10),
-
-  JWT_SECRET: z.string().optional(),
-  ENCRYPTION_KEY: z.string().optional(),
-});
-
-const _parsed = envSchema.safeParse(process.env);
-
-if (!_parsed.success) {
-  console.error("❌ Invalid environment configuration:");
-  console.error(_parsed.error.format());
-  process.exit(1);
+function optionalEnv(key: string, fallback: string): string {
+  return process.env[key]?.trim() ?? fallback;
 }
 
-export const env = _parsed.data;
-export type Env = z.infer<typeof envSchema>;
-export const isProduction = env.NODE_ENV === "production";
-export const isDevelopment = env.NODE_ENV === "development";
+export const env = {
+  // ── Runtime ───────────────────────────────────────────────────────────────
+  APP_ENV:  optionalEnv("APP_ENV",  "development"),
+  NODE_ENV: optionalEnv("NODE_ENV", "development"),
+  LOG_LEVEL: optionalEnv("LOG_LEVEL", "info"),
+
+  // ── Firebase ──────────────────────────────────────────────────────────────
+  FIREBASE_PROJECT_ID:  optionalEnv("FIREBASE_PROJECT_ID",  ""),
+  FIREBASE_PRIVATE_KEY: optionalEnv("FIREBASE_PRIVATE_KEY", ""),
+  FIREBASE_CLIENT_EMAIL: optionalEnv("FIREBASE_CLIENT_EMAIL", ""),
+
+  // ── Blockchain — Base Sepolia (84532) ─────────────────────────────────────
+  BASE_RPC_URL:             optionalEnv("BASE_RPC_URL", "https://sepolia.base.org"),
+  TREASURY_PRIVATE_KEY:     optionalEnv("TREASURY_PRIVATE_KEY", ""),
+  PAYMENT_CONTRACT_ADDRESS: optionalEnv("PAYMENT_CONTRACT_ADDRESS", "0xaC11528c36A05C904Bead5Ed3a74d4e40Dd38bfE"),
+  USDC_CONTRACT_ADDRESS:    optionalEnv("USDC_CONTRACT_ADDRESS",    "0xB9a0E369995c03d966470D4E86b1bdbAD9bd7dc2"),
+
+  // ── Relayer ───────────────────────────────────────────────────────────────
+  RELAYER_API_SECRET: optionalEnv("RELAYER_API_SECRET", ""),
+
+  // ── FX ────────────────────────────────────────────────────────────────────
+  FX_API_URL:            optionalEnv("FX_API_URL", ""),
+  FX_API_KEY:            optionalEnv("FX_API_KEY", ""),
+  FX_RATE_CACHE_SECONDS: parseInt(optionalEnv("FX_RATE_CACHE_SECONDS", "300"), 10),
+
+  // ── Transaction limits ────────────────────────────────────────────────────
+  MIN_TRANSACTION_NGN: parseInt(optionalEnv("MIN_TRANSACTION_NGN", "500"),     10),
+  MAX_TRANSACTION_NGN: parseInt(optionalEnv("MAX_TRANSACTION_NGN", "5000000"), 10),
+} as const;

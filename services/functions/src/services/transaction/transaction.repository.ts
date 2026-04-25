@@ -13,7 +13,6 @@ import { TransactionStateMachine } from "./state-machine/transaction.state-machi
 
 const logger = createContextLogger({ service: "TransactionRepository" });
 
-// Firestore rejects undefined values — strip them before writing
 function cleanTransition(t: Partial<StateTransition>): Record<string, unknown> {
   const obj: Record<string, unknown> = {
     from: t.from,
@@ -65,7 +64,6 @@ export class TransactionRepository {
     };
 
     await db.collection(Collections.TRANSACTIONS).doc(id).set(transaction);
-
     logger.info("Transaction created", { transactionId: id, status: dto.status });
 
     const snap = await db.collection(Collections.TRANSACTIONS).doc(id).get();
@@ -76,6 +74,49 @@ export class TransactionRepository {
     const doc = await db.collection(Collections.TRANSACTIONS).doc(transactionId).get();
     if (!doc.exists) throw new NotFoundError("Transaction");
     return doc.data() as TransactionModel;
+  }
+
+  async findByTxHash(txHash: string): Promise<TransactionModel> {
+    const snap = await db
+      .collection(Collections.TRANSACTIONS)
+      .where("blockchain.txHash", "==", txHash)
+      .limit(1)
+      .get();
+    if (snap.empty) throw new NotFoundError("Transaction");
+    return snap.docs[0].data() as TransactionModel;
+  }
+
+  async findByOnChainId(onChainId: string): Promise<TransactionModel> {
+    const snap = await db
+      .collection(Collections.TRANSACTIONS)
+      .where("blockchain.paymentId", "==", onChainId)
+      .limit(1)
+      .get();
+    if (snap.empty) throw new NotFoundError("Transaction");
+    return snap.docs[0].data() as TransactionModel;
+  }
+
+  async findStuck(olderThanMinutes = 30): Promise<TransactionModel[]> {
+    const cutoff = new Date(Date.now() - olderThanMinutes * 60 * 1000);
+    const stuckStatuses: TransactionStatus[] = [
+      "INITIATED",
+      "NAIRA_DEBITED",
+      "USDC_SENT",
+      "CEDIS_CREDITED",
+    ];
+    const results: TransactionModel[] = [];
+
+    for (const status of stuckStatuses) {
+      const snap = await db
+        .collection(Collections.TRANSACTIONS)
+        .where("status", "==", status)
+        .where("createdAt", "<", cutoff)
+        .limit(50)
+        .get();
+      results.push(...snap.docs.map((d) => d.data() as TransactionModel));
+    }
+
+    return results;
   }
 
   async transition(
@@ -124,7 +165,10 @@ export class TransactionRepository {
       updated = {
         ...current,
         status: to,
-        stateHistory: [...current.stateHistory, newTransition as unknown as StateTransition],
+        stateHistory: [
+          ...current.stateHistory,
+          newTransition as unknown as StateTransition,
+        ],
       };
     });
 
@@ -134,12 +178,14 @@ export class TransactionRepository {
 
   async findByUserId(userId: string, limit = 20): Promise<TransactionModel[]> {
     const [sent, received] = await Promise.all([
-      db.collection(Collections.TRANSACTIONS)
+      db
+        .collection(Collections.TRANSACTIONS)
         .where("senderId", "==", userId)
         .orderBy("createdAt", "desc")
         .limit(limit)
         .get(),
-      db.collection(Collections.TRANSACTIONS)
+      db
+        .collection(Collections.TRANSACTIONS)
         .where("receiverId", "==", userId)
         .orderBy("createdAt", "desc")
         .limit(limit)
@@ -153,8 +199,10 @@ export class TransactionRepository {
 
     return all
       .sort((a, b) => {
-        const aTime = (a.createdAt as unknown as { _seconds: number })._seconds ?? 0;
-        const bTime = (b.createdAt as unknown as { _seconds: number })._seconds ?? 0;
+        const aTime =
+          (a.createdAt as unknown as { _seconds: number })._seconds ?? 0;
+        const bTime =
+          (b.createdAt as unknown as { _seconds: number })._seconds ?? 0;
         return bTime - aTime;
       })
       .slice(0, limit);
