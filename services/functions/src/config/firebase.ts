@@ -26,14 +26,14 @@ if (!admin.apps.length) {
       admin.initializeApp();
       logger.info("Firebase Admin initialized with ADC");
     } else {
-      if (!env.FIREBASE_PRIVATE_KEY || !env.FIREBASE_CLIENT_EMAIL) {
+      if (!env.FB_PRIVATE_KEY || !env.FB_CLIENT_EMAIL) {
         throw new Error("FIREBASE_PRIVATE_KEY and FIREBASE_CLIENT_EMAIL required");
       }
       admin.initializeApp({
         credential: admin.credential.cert({
           projectId: env.FIREBASE_PROJECT_ID,
-          privateKey: env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, "\n"),
-          clientEmail: env.FIREBASE_CLIENT_EMAIL,
+          privateKey: env.FB_PRIVATE_KEY.replace(/\\n/g, "\n"),
+          clientEmail: env.FB_CLIENT_EMAIL,
         }),
         projectId: env.FIREBASE_PROJECT_ID,
       });

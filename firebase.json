@@ -1,23 +1,20 @@
 {
-  "functions": [
-    {
-      "source": "services/functions",
-      "codebase": "default",
-      "ignore": ["node_modules", ".git", "firebase-debug.log"],
-      "predeploy": [
-        "npm --prefix \"$RESOURCE_DIR\" run build"
-      ]
-    }
-  ],
+  "functions": {
+    "source": "services/functions",
+    "runtime": "nodejs18",
+    "secrets": [
+      "TREASURY_PRIVATE_KEY",
+      "FB_PRIVATE_KEY",
+      "FB_CLIENT_EMAIL",
+      "RELAYER_API_SECRET"
+    ]
+  },
   "firestore": {
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
-  "emulators": {
-    "auth": { "port": 9099 },
-    "functions": { "port": 5001 },
-    "firestore": { "port": 8080 },
-    "ui": { "enabled": true, "port": 4000 },
-    "singleProjectMode": true
+  "hosting": {
+    "public": "apps/web/out",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"]
   }
 }

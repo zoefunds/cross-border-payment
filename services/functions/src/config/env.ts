@@ -14,8 +14,8 @@ export const env = {
   LOG_LEVEL: get("LOG_LEVEL", "info"),
 
   FIREBASE_PROJECT_ID:   get("FIREBASE_PROJECT_ID",   "cross-border-3a994"),
-  FIREBASE_PRIVATE_KEY:  get("FIREBASE_PRIVATE_KEY",  ""),
-  FIREBASE_CLIENT_EMAIL: get("FIREBASE_CLIENT_EMAIL", ""),
+  FB_PRIVATE_KEY:  get("FB_PRIVATE_KEY",  ""),
+  FB_CLIENT_EMAIL: get("FB_CLIENT_EMAIL", ""),
 
   BASE_RPC_URL:             get("BASE_RPC_URL",             "https://sepolia.base.org"),
   TREASURY_PRIVATE_KEY:     get("TREASURY_PRIVATE_KEY",     ""),
