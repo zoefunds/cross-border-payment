@@ -1,33 +1,33 @@
-function optionalEnv(key: string, fallback: string): string {
+/**
+ * Environment configuration — reads from process.env.
+ * In production: set via Firebase Functions environment variables (Secret Manager).
+ * In development: set via .env file loaded by the emulator.
+ */
+
+function get(key: string, fallback = ""): string {
   return process.env[key]?.trim() ?? fallback;
 }
 
 export const env = {
-  // ── Runtime ───────────────────────────────────────────────────────────────
-  APP_ENV:  optionalEnv("APP_ENV",  "development"),
-  NODE_ENV: optionalEnv("NODE_ENV", "development"),
-  LOG_LEVEL: optionalEnv("LOG_LEVEL", "info"),
+  APP_ENV:  get("APP_ENV",  "development"),
+  NODE_ENV: get("NODE_ENV", "development"),
+  LOG_LEVEL: get("LOG_LEVEL", "info"),
 
-  // ── Firebase ──────────────────────────────────────────────────────────────
-  FIREBASE_PROJECT_ID:  optionalEnv("FIREBASE_PROJECT_ID",  ""),
-  FIREBASE_PRIVATE_KEY: optionalEnv("FIREBASE_PRIVATE_KEY", ""),
-  FIREBASE_CLIENT_EMAIL: optionalEnv("FIREBASE_CLIENT_EMAIL", ""),
+  FIREBASE_PROJECT_ID:   get("FIREBASE_PROJECT_ID",   "cross-border-3a994"),
+  FIREBASE_PRIVATE_KEY:  get("FIREBASE_PRIVATE_KEY",  ""),
+  FIREBASE_CLIENT_EMAIL: get("FIREBASE_CLIENT_EMAIL", ""),
 
-  // ── Blockchain — Base Sepolia (84532) ─────────────────────────────────────
-  BASE_RPC_URL:             optionalEnv("BASE_RPC_URL", "https://sepolia.base.org"),
-  TREASURY_PRIVATE_KEY:     optionalEnv("TREASURY_PRIVATE_KEY", ""),
-  PAYMENT_CONTRACT_ADDRESS: optionalEnv("PAYMENT_CONTRACT_ADDRESS", "0xaC11528c36A05C904Bead5Ed3a74d4e40Dd38bfE"),
-  USDC_CONTRACT_ADDRESS:    optionalEnv("USDC_CONTRACT_ADDRESS",    "0xB9a0E369995c03d966470D4E86b1bdbAD9bd7dc2"),
+  BASE_RPC_URL:             get("BASE_RPC_URL",             "https://sepolia.base.org"),
+  TREASURY_PRIVATE_KEY:     get("TREASURY_PRIVATE_KEY",     ""),
+  PAYMENT_CONTRACT_ADDRESS: get("PAYMENT_CONTRACT_ADDRESS", "0xaC11528c36A05C904Bead5Ed3a74d4e40Dd38bfE"),
+  USDC_CONTRACT_ADDRESS:    get("USDC_CONTRACT_ADDRESS",    "0xB9a0E369995c03d966470D4E86b1bdbAD9bd7dc2"),
 
-  // ── Relayer ───────────────────────────────────────────────────────────────
-  RELAYER_API_SECRET: optionalEnv("RELAYER_API_SECRET", ""),
+  RELAYER_API_SECRET: get("RELAYER_API_SECRET", ""),
 
-  // ── FX ────────────────────────────────────────────────────────────────────
-  FX_API_URL:            optionalEnv("FX_API_URL", ""),
-  FX_API_KEY:            optionalEnv("FX_API_KEY", ""),
-  FX_RATE_CACHE_SECONDS: parseInt(optionalEnv("FX_RATE_CACHE_SECONDS", "300"), 10),
+  FX_API_URL: get("FX_API_URL", ""),
+  FX_API_KEY: get("FX_API_KEY", ""),
+  FX_RATE_CACHE_SECONDS: parseInt(get("FX_RATE_CACHE_SECONDS", "300"), 10),
 
-  // ── Transaction limits ────────────────────────────────────────────────────
-  MIN_TRANSACTION_NGN: parseInt(optionalEnv("MIN_TRANSACTION_NGN", "500"),     10),
-  MAX_TRANSACTION_NGN: parseInt(optionalEnv("MAX_TRANSACTION_NGN", "5000000"), 10),
+  MIN_TRANSACTION_NGN: parseInt(get("MIN_TRANSACTION_NGN", "500"),     10),
+  MAX_TRANSACTION_NGN: parseInt(get("MAX_TRANSACTION_NGN", "5000000"), 10),
 } as const;
