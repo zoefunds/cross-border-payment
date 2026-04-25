@@ -16,7 +16,7 @@ import { sendError } from "./utils/response";
 import { transactionRecoveryService } from "./services/transaction/recovery/transaction.recovery";
 import { liquidityService } from "./services/liquidity/liquidity.service";
 
-logger.info("Cross-Border Payment Functions initializing...", {
+logger.debug("Cross-Border Payment Functions initializing...", {
   nodeVersion: process.version,
   environment: process.env["APP_ENV"] ?? "development",
 });

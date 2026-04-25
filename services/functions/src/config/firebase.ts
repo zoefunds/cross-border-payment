@@ -1,7 +1,6 @@
 import * as admin from "firebase-admin";
 import { env } from "./env";
 
-// Collections used across the app
 export const Collections = {
   USERS:        "users",
   TRANSACTIONS: "transactions",
@@ -11,26 +10,16 @@ export const Collections = {
 } as const;
 
 if (!admin.apps.length) {
-  try {
-    if (env.FB_PRIVATE_KEY && env.FB_CLIENT_EMAIL) {
-      // Production — use service account credentials
-      admin.initializeApp({
-        credential: admin.credential.cert({
-          projectId:   env.FIREBASE_PROJECT_ID,
-          privateKey:  env.FB_PRIVATE_KEY.replace(/\\n/g, "\n"),
-          clientEmail: env.FB_CLIENT_EMAIL,
-        }),
-        projectId: env.FIREBASE_PROJECT_ID,
-      });
-    } else {
-      // Local emulator or analysis — use application default credentials
-      admin.initializeApp({
-        projectId: env.FIREBASE_PROJECT_ID,
-      });
-    }
-  } catch (err) {
-    console.warn("Firebase Admin init — using default credentials for analysis");
-    // Initialize with minimal config so the process doesn't crash during analysis
+  if (env.FB_PRIVATE_KEY && env.FB_CLIENT_EMAIL) {
+    admin.initializeApp({
+      credential: admin.credential.cert({
+        projectId:   env.FIREBASE_PROJECT_ID,
+        privateKey:  env.FB_PRIVATE_KEY.replace(/\\n/g, "\n"),
+        clientEmail: env.FB_CLIENT_EMAIL,
+      }),
+      projectId: env.FIREBASE_PROJECT_ID,
+    });
+  } else {
     admin.initializeApp({ projectId: env.FIREBASE_PROJECT_ID });
   }
 }
