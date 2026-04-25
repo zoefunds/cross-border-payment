@@ -10,5 +10,5 @@
     "deploy": "cd services/functions && npm run deploy",
     "logs": "firebase functions:log"
   },
-  "engines": { "node": ">=18.0.0" }
+  "engines": { "node": ">=22.0.0" }
 }
